@@ -95,7 +95,7 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>给你两个单词 word1 和 word2，请你计算出将 word1 转换成 word2 所使用的最少操作数 。<br>你可以对一个单词进行如下三种操作：</p>
+        <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>给你两个单词 word1 和 word2，请你计算出将 word1 转换成 word2 所使用的最少操作数 。<br>你可以对一个单词进行如下三种操作：</p>
 <ul>
 <li>插入一个字符</li>
 <li>删除一个字符</li>
@@ -127,8 +127,10 @@
 <li>这条路径的最后操作如果是insert，则必然存在于(word1[0:m-1], word2[0:n])的方案中，</li>
 </ol>
 <p>解决这三个问题也就证明了我们的算法是拥有最优子结构性质，也就是动态规划可解的。</p>
-<p><strong>转移方程</strong>:<br>$$dis[m,n] = min(dis[m-1, n-1] + 1_{s1_{m-1}\neq s2_{n-1}},<br>                 dis[m, n-1] + 1,<br>                 dis[m-1, n] + 1)$$</p>
-<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><pre><code>def minDistance(self, word1, word2):
+<p><strong>转移方程</strong>:</p>
+<script type="math/tex; mode=display">dis[m,n] = min(dis[m-1, n-1] + 1_{s1_{m-1}\neq s2_{n-1}}, 
+                 dis[m, n-1] + 1, 
+                 dis[m-1, n] + 1)</script><h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><pre><code>def minDistance(self, word1, word2):
     &quot;&quot;&quot;
     :type word1: str
     :type word2: str
@@ -147,8 +149,8 @@
             if ele1 == ele2:
                 tmp = 0
             dp[i + 1][j + 1] = min(dp[i][j] + tmp, dp[i][j+1] + 1, dp[i+1][j] + 1)
-    return dp[len2][len1]</code></pre>
-
+    return dp[len2][len1]
+</code></pre>
       
     </div>
     <footer class="article-footer">
