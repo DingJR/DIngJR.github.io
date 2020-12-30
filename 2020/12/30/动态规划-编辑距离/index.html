@@ -1,286 +1,37 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  
-  
-  <title>动态规划-编辑距离 | Hexo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="问题给你两个单词 word1 和 word2，请你计算出将 word1 转换成 word2 所使用的最少操作数 。你可以对一个单词进行如下三种操作：  插入一个字符 删除一个字符 替换一个字符  分析 编辑距离是针对二个字符串（例如英文字）的差异程度的量化量测，量测方式是看至少需要多少次的处理才能将一个字符串变成另一个字符串。编辑距离可以用在自然语言处理中，例如拼写检查可以根据一个拼错的字和其他正">
-<meta property="og:type" content="article">
-<meta property="og:title" content="动态规划-编辑距离">
-<meta property="og:url" content="https://dingjr.github.io/2020/12/30/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92-%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB/index.html">
-<meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="问题给你两个单词 word1 和 word2，请你计算出将 word1 转换成 word2 所使用的最少操作数 。你可以对一个单词进行如下三种操作：  插入一个字符 删除一个字符 替换一个字符  分析 编辑距离是针对二个字符串（例如英文字）的差异程度的量化量测，量测方式是看至少需要多少次的处理才能将一个字符串变成另一个字符串。编辑距离可以用在自然语言处理中，例如拼写检查可以根据一个拼错的字和其他正">
-<meta property="og:locale">
-<meta property="article:published_time" content="2020-12-30T03:51:06.000Z">
-<meta property="article:modified_time" content="2020-12-30T05:38:16.991Z">
-<meta property="article:author" content="Juran Ding">
-<meta property="article:tag" content="Algorithm and DataStructure">
-<meta name="twitter:card" content="summary">
-  
-    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
-  
-  
-    <link rel="shortcut icon" href="/favicon.png">
-  
-  
-    
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
-
-  
-  
-<link rel="stylesheet" href="/css/style.css">
-
-  
-    
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
-
-  
-<!-- hexo injector head_end start -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
-<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.3.0"></head>
-
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">Hexo</a>
-      </h1>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Suche"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Suche"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://DingJR.github.io"></form>
-      </div>
-    </div>
-  </div>
-</header>
-
-      <div class="outer">
-        <section id="main"><article id="post-动态规划-编辑距离" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/12/30/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92-%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB/" class="article-date">
-  <time class="dt-published" datetime="2020-12-30T03:51:06.000Z" itemprop="datePublished">2020-12-30</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="p-name article-title" itemprop="headline name">
-      动态规划-编辑距离
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>给你两个单词 word1 和 word2，请你计算出将 word1 转换成 word2 所使用的最少操作数 。<br>你可以对一个单词进行如下三种操作：</p>
-<ul>
-<li>插入一个字符</li>
-<li>删除一个字符</li>
-<li>替换一个字符</li>
-</ul>
-<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><blockquote>
-<p>编辑距离是针对二个字符串（例如英文字）的差异程度的量化量测，量测方式是看至少需要多少次的处理才能将一个字符串变成另一个字符串。编辑距离可以用在自然语言处理中，例如拼写检查可以根据一个拼错的字和其他正确的字的编辑距离，判断哪一个（或哪几个）是比较可能的字。DNA也可以视为用A、C、G和T组成的字符串，因此编辑距离也用在生物信息学中，判断二个DNA的类似程度。Unix 下的 diff 及 patch 即是利用编辑距离来进行文本编辑对比的例子。</p>
-</blockquote>
-<p>编辑距离在语音识别，现代编辑器，输入法甚至基因测序中都有作用。在这个问题里出现的是Levenshtein距离，即可以对字符串进行insert,delete,replace三种操作完成变化。</p>
-<p>刚拿到问题时第一直觉是尽可能原位置匹配，但这必然是个极其复杂的搜索过程，所以问题并没有得到明晰反而更复杂了；第二个思路是是否可能在一个最优变化中是否可以缩小到仅有插入替换或者删除替换，但存在”aosososoe”，”osososea”这样的反例，所以也不可行。既然不能把问题的结构简化也不能设计出看似合理的搜索树，那就尝试思考是否可以从子问题构建原问题的解。第三方案似乎可行，但如何拆分？</p>
-<h2 id="Optimal-Substructure-Property"><a href="#Optimal-Substructure-Property" class="headerlink" title="Optimal Substructure Property"></a>Optimal Substructure Property</h2><p>因为存在两个字符串，所以这不是一个单维度的问题。所以如果使用DP一定会先考虑如果我现在有(word1[0:m-1], word2[0:n-1])的最小距离，是否可以构成(word1[0:m], word2[0:n])的最小距离？如果我的最后一步是替换或者word1[m-1]==word2[n-1]那应该就是可行的。似乎整理出了一点思路，但这还远远够不上最优子结构，因为:</p>
-<ol>
-<li>虽然存在变化，但可能最后一步不是替换</li>
-<li>整个变换根本不存在替换</li>
-<li>这个子问题的解并不是通往最优大方案的必经方案。</li>
-</ol>
-<p><em>这三个问题是否可解？</em></p>
-<p><strong>问题2</strong>：<br>只要字符串不一致，就一定存在三种变换之一。所以在找子问题的时候我可以扩大我的子问题范围，让最后一步可能是insert，delete，replace三者之一。</p>
-<ol>
-<li>如果通过(word1[0:m-1], word2[0:n-1])方案, 最后一步只能是replace或者不变</li>
-<li>如果通过(word1[0:m], word2[0:n-1])方案, 最后一步只能是insert</li>
-<li>如果通过(word1[0:m-1], word2[0:n])方案, 最后一步只能是delete</li>
-</ol>
-<p><strong>问题1</strong>：<br>一个最优解的变化过程可以写成二元序列的形式，[(i_1,ope1), (i_2, ope2)…(i_n, open)]，ope为三操作之一，i为具体元素。无论我最后一个操作需要什么，只要在序列中出现了这个操作，都可以把它放到最后而整个变化过程依然成立。<strong>这是因为对个元素我们最多只会操作一次，插入后替换删除都是会引发多余步骤，删除后再插入亦然，替换后删除亦然。</strong></p>
-<p><strong>问题3</strong>:<br>现在所有的子问题齐全，我们也证明了确实存在从三个子最优方案到达原方案的路径。接下来要看是否存在一条路径，使得其不通过我们的三条最优子方案：</p>
-<ol>
-<li>这条路径的最后操作如果是replace，则必然存在于(word1[0:m-1], word2[0:n-1])的方案中，</li>
-<li>这条路径的最后操作如果是delete，则必然存在于(word1[0:m], word2[0:n-1])的方案中，</li>
-<li>这条路径的最后操作如果是insert，则必然存在于(word1[0:m-1], word2[0:n])的方案中，</li>
-</ol>
-<p>解决这三个问题也就证明了我们的算法是拥有最优子结构性质，也就是动态规划可解的。</p>
-<p><strong>转移方程</strong>:</p>
-<script type="math/tex; mode=display">dis[m,n]=min\left\{
-\begin{aligned}
-    &dis[m-1, n-1] + 1_{s1_{m-1} \  \neq s2_{n-1}} \\
-    &dis[m, n-1] + 1 \\
-    &dis[m-1, n] + 1
-\end{aligned}
-\right.</script><h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><pre><code>def minDistance(self, word1, word2):
-    &quot;&quot;&quot;
-    :type word1: str
-    :type word2: str
-    :rtype: int
-    &quot;&quot;&quot;
-    len1 = len(word1)
-    len2 = len(word2)
-    dp = [[0 for j in range(len1 + 1)] for i in range(len2 + 1)]
-    for i in range(len1 + 1): 
-        dp[0][i] = i
-    for i in range(len2 + 1):
-        dp[i][0] = i
-    for i, ele1 in enumerate(word2):
-        for j, ele2 in enumerate(word1):
-            tmp = 1
-            if ele1 == ele2:
-                tmp = 0
-            dp[i + 1][j + 1] = min(dp[i][j] + tmp, dp[i][j+1] + 1, dp[i+1][j] + 1)
-    return dp[len2][len1]
-</code></pre>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://dingjr.github.io/2020/12/30/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92-%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB/" data-id="ckjayscpi0000okupbgeicni5" data-title="动态规划-编辑距离" class="article-share-link">Teilen</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm-and-DataStructure/" rel="tag">Algorithm and DataStructure</a></li></ul>
-
-    </footer>
-  </div>
-  
-    
-<nav id="article-nav">
-  
-  
-    <a href="/2020/12/30/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E7%90%86%E8%AE%BA/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Älter</strong>
-      <div class="article-nav-title">动态规划理论</div>
-    </a>
-  
-</nav>
-
-  
-</article>
+{% extends '_layout.swig' %}
+{% import '_macro/post.swig' as post_template %}
+{% import '_macro/sidebar.swig' as sidebar_template %}
 
 
-</section>
-        
-          <aside id="sidebar">
-  
-    
+{% block title %}{{ page.title }} | {{ config.title }}{% endblock %}
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm-and-DataStructure/" rel="tag">Algorithm and DataStructure</a></li></ul>
+{% block page_class %}page-post-detail{% endblock %}
+
+
+{% block content %}
+
+  <div id="posts" class="posts-expand">
+    {{ post_template.render(page) }}
+
+    <div class="post-spread">
+      {% if theme.jiathis %}
+        {% include '_partials/share/jiathis.swig' %}
+      {% elseif theme.baidushare %}
+        {% include '_partials/share/baidushare.swig' %}
+      {% elseif theme.add_this_id %}
+        {% include '_partials/share/add-this.swig' %}
+      {% elseif theme.duoshuo_shortname and theme.duoshuo_share %}
+        {% include '_partials/share/duoshuo_share.swig' %}
+      {% endif %}
     </div>
   </div>
 
+{% endblock %}
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/Algorithm-and-DataStructure/" style="font-size: 10px;">Algorithm and DataStructure</a>
-    </div>
-  </div>
+{% block sidebar %}
+  {{ sidebar_template.render(true) }}
+{% endblock %}
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archiv</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">letzter Beitrag</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2020/12/30/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92-%E7%BC%96%E8%BE%91%E8%B7%9D%E7%A6%BB/">动态规划-编辑距离</a>
-          </li>
-        
-          <li>
-            <a href="/2020/12/30/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92%E7%90%86%E8%AE%BA/">动态规划理论</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      
-      &copy; 2020 Juran Ding<br>
-      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
-    
-
-
-<script src="/js/jquery-3.4.1.min.js"></script>
-
-
-
-  
-<script src="/fancybox/jquery.fancybox.min.js"></script>
-
-
-
-
-<script src="/js/script.js"></script>
-
-
-
-
-
-  </div>
-</body>
-</html>
+{% block script_extra %}
+  {% include '_scripts/pages/post-details.swig' %}
+{% endblock %}
