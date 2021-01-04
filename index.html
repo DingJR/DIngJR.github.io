@@ -186,7 +186,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-count">8</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -199,7 +199,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -233,6 +233,202 @@
       
 
       
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://dingjr.github.io/2021/01/04/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Juran Ding">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="居然的博客">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/01/04/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84/" class="post-title-link" itemprop="url">树状数组</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-01-04 00:59:57 / 修改时间：11:54:35" itemprop="dateCreated datePublished" datetime="2021-01-04T00:59:57+08:00">2021-01-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Algorithm-and-DataStructure/" itemprop="url" rel="index"><span itemprop="name">Algorithm and DataStructure</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="BIT-Binary-Indexed-Tree"><a href="#BIT-Binary-Indexed-Tree" class="headerlink" title="BIT(Binary Indexed Tree)"></a>BIT(Binary Indexed Tree)</h2><h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><p><strong>树状数组</strong>是存储前缀后的数组。</p>
+<p>为什么需要专门需要多开辟$O(n)$空间去存储？考虑我们有一个a数组，我们现在需要它所有的前缀和，即所有的$\sum^k_{j=1}a_j,k=1…n$，一次遍历足够。但在<strong>查询</strong>中，如果只要第k个前缀和，那这样$O(n)$的遍历就过于复杂了。所以存于数组中是个直觉上的办法。</p>
+<p>为什么需要BIT？现在考虑<strong>更新</strong>操作，如果我们对a[0]进行了更新，那整个前缀和数组就不正确，所以需要再次更新整个数组，复杂度沦为$O(n)$。</p>
+<p>所以BIT的出现就是时间空间的tradeoff，将查询前缀和和更新前缀和的时间都平衡为$O(logn)$。</p>
+<h3 id="建树"><a href="#建树" class="headerlink" title="建树"></a>建树</h3><p>对于任何一个前缀和，我们可以把它表示为一串range和的形式，比如:</p>
+<pre><code>preSum[13（0b1101)] =  rangeSum[0b0001-0b1000]  + rangeSum[0b1001-0b1100] + rangeSum[0b1101] = rangeSum[1-8] + rangeSUm[9-12] + rangeSum[13]
+</code></pre><p>而BIT记录的就是rangeSum，详细定义如下：</p>
+<script type="math/tex; mode=display">BIT[i] = \sum^i_{j=i-lowBit(i)+1}A_j</script><p>lowBit(i)为二进制表示中最后一个1代表的数值。</p>
+<p><img src="build.jpg" alt=""></p>
+<p>如图所示，其中下滑绿线表示记录的rangeSum范围。可以这样表示的原因是任何书都可以表示成2的幂和的形式。</p>
+<h3 id="查询"><a href="#查询" class="headerlink" title="查询"></a>查询</h3><p><img src="query.jpg" alt=""></p>
+<p>由此对于任意查询，都可以分解为一串range和，而每一层rangeSum最多提供一个，比如查询preSum[7]，提供的是第一层b[7],第二层的b[6]，和第三层的b[4]。</p>
+<p>而由此我们也得到了查询的算法：</p>
+<ol>
+<li>首先,将ans初始化为0，将i初始化为k</li>
+<li>将ans的值加上BIT[i]</li>
+<li>将i的值减去lowbit(i)</li>
+<li><p>重复步骤2～3，直到i的值变为0</p>
+<p> int query(int k)<br> {</p>
+<pre><code> int ans = 0;
+ for (int i = k; i &gt; 0; i -= lowbit(i))
+     ans += BIT[i];
+ return ans;
+</code></pre><p> }</p>
+</li>
+</ol>
+<h3 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h3><p><img src="update.jpg" alt=""></p>
+<p>对于更新操作，我们要把所有range包含了更新元素的b数组全部更新，对于查询，我们是不断拆分成一串range和的形式；而对于更新，我们是不断找到父range去更新的过程。比如对于更新a[3]，我们最终更新了第一层的b[3]，第三层的b[4]，和第四层的b[8]。如果我们BIT还更长，我们还有继续可能更新第五层的b[16]，第六层的b[32]……</p>
+<pre><code>void update(int i, int delta)
+&#123;
+    for (int j = i; j &lt;= MAX_N; j += lowbit(j))
+        BIT[j] += delta;
+&#125;
+</code></pre><h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h2><p>给定一个数组 nums ，如果 i &lt; j 且 nums[i] &gt; 2*nums[j] 我们就将 (i, j) 称作一个重要翻转对。</p>
+<p>你需要返回给定数组中的重要翻转对的数量。</p>
+<h2 id="解答"><a href="#解答" class="headerlink" title="解答"></a>解答</h2><p>拿到这个问题第一反应是遍历，以$O(n^2)$复杂度去遍历，找到所有的对，这就行了。但还可以更好，尝试用树状数组解答：</p>
+<h3 id="树状数组使用"><a href="#树状数组使用" class="headerlink" title="树状数组使用"></a>树状数组使用</h3><ol>
+<li>是树状数组存储的不是元素和吗？为什么可以用在这个问题上？<ul>
+<li>树状数组可以做求和，但它本质上是对range中每个元素的积累，自然也可以存储元素个数</li>
+</ul>
+</li>
+<li>最终的结果记录为$\sum^n_{i=1}reversePair[i]$遍历过程中知道当前i所拥有的翻转，但是简单加和所有i的结果，不是会有重复吗？<ul>
+<li>记录的reversePair要不然是处于$num[i] &gt; 2*num[j]$的左边，要不然是右边，即我们记录是所有翻转对first元素的数量集合，或者second元素的数量集合，不会出现重叠。</li>
+</ul>
+</li>
+<li>两种遍历<ol>
+<li>如果记录是表示不等式左边，即记录所有$num[i]&gt;2*num[j]$，那从右到左遍历，reversePair[i] = bit[floor((i+1)/2)]，然后更新num[i]到bit</li>
+<li>如果记录时表示不等式右边，即记录所有$num[j]&lt;num[i]/2$，那从左到右遍历，reversePair[j] = bit[curBiggestNum] - bit[2*num[j]]，然后更新num[j]到bit</li>
+</ol>
+</li>
+</ol>
+<h3 id="离散化数组"><a href="#离散化数组" class="headerlink" title="离散化数组"></a>离散化数组</h3><ol>
+<li>这个问题还需要考虑空间的容量，我们的bit数组的空间和range的范围是匹配的，range可以到$2^{32}$，这是不可接受的空间复杂度。<ul>
+<li>我们要的只是元素个数，和该元素bit数组中的具体位置，[1,2]和[1,100000]这两个数组得到的结果会有任何区别吗？不会。所以可以把100000映射到2再去访问，这就是离散化过程。我们将所有元素排序，并且放入hashMap(element, Index)中即完成映射。</li>
+</ul>
+</li>
+<li>两种遍历方法都会有可能导致index的访问失败，比如floor((i+1)/2)可能不在hashMap中，这时候怎么办？<ul>
+<li>方法1：我们用有序array存储结果，最后用二分法去找寻这个元素左边的index</li>
+<li>方法2：在开始存储bit数组时就把这些可能不在的数值也放进去，会导致bit数组再长一点但编码相对简单。</li>
+</ul>
+</li>
+</ol>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><p>我使用从右到左的遍历，并且采取方法2去避免index的丢失</p>
+<pre><code>class Solution&#123;
+    private int[] bit;
+    private HashMap&lt;Integer, Integer&gt; index;
+    int lowBit(int a)&#123;
+        return a &amp; (-a);
+    &#125;
+    void update(int idx, int v)&#123;
+        while(idx &lt; bit.length)&#123;
+            bit[idx] += v;
+            idx += lowBit(idx);
+        &#125;
+    &#125;
+    int query(int idx)&#123;
+        int res = 0;
+        while(idx != 0)&#123;
+            res += bit[idx];
+            idx -= lowBit(idx);
+
+        &#125;
+        return res;
+    &#125;
+    private void discretization(int[] nums)&#123;
+        Set&lt;Integer&gt; set = new HashSet&lt;Integer&gt;();
+        for(int num: nums)&#123;
+            set.add(num);
+            set.add((int)((Math.floorDiv((long)(num+1),2))) - 1);
+        &#125;
+        this.index = new HashMap&lt;Integer, Integer&gt;();
+        int []temp = new int[set.size()];
+        int p = 0;
+        for(int num : set)&#123;
+            temp[p++] = num;
+        &#125;
+        Arrays.sort(temp);
+        p = 1;
+        for(int num : temp)&#123;
+            this.index.put(num, p++);
+        &#125;
+    &#125;
+    public int reversePairs(int[] nums) &#123;
+        this.bit = new int[2*nums.length + 10];
+        discretization(nums);
+        for(int i=0; i&lt;nums.length; i++)&#123;
+            bit[i] = 0;
+        &#125;
+        List&lt;Integer&gt; res = new LinkedList&lt;Integer&gt;();
+        for(int i=nums.length - 1; i&gt;=0; i--)&#123;
+            int tmp1 = this.index.get(nums[i]);
+            int tmp2 = this.index.get((int)Math.floorDiv((long)(nums[i]+1),2) - 1);
+            res.add(query(tmp2));
+            update(tmp1, 1);
+        &#125;
+        int ans = 0;
+        for(int num:res)&#123;
+            ans += num;
+        &#125;
+        return ans;
+    &#125;
+&#125;
+</code></pre><h3 id="复杂度分析"><a href="#复杂度分析" class="headerlink" title="复杂度分析"></a>复杂度分析</h3><p><strong>时间复杂度</strong>：遍历*bit数组更新查询复杂度为$O(nlog{|C|})$，数组排序为$O(nlog{n})$，最终复杂度为$O(nlog{n})$</p>
+<p><strong>空间复杂度</strong>：存储bit数组可能需要两倍于nums的容量，因为会自己添加些新元素，复杂度为O(n)，index的空间复杂度为O(n)。综上，复杂度为$O(n)$</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -272,7 +468,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-01-04 00:24:36" itemprop="dateModified" datetime="2021-01-04T00:24:36+08:00">2021-01-04</time>
+        <time title="修改时间：2021-01-04 00:25:29" itemprop="dateModified" datetime="2021-01-04T00:25:29+08:00">2021-01-04</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -307,18 +503,18 @@
 <li><strong>抽象感觉</strong>：从对象差异分离出来，达到纯粹化。花的气味/形状/颜色成为花的特征，这就是抽象感觉。</li>
 </ol>
 <p>感觉被荣格视为<strong>有意识的知觉</strong>：因为涉及意识的运用，在外向性格中感觉受到抑制，因为所看所感如果不能达到意识感受的阈值，它将不能从体感形成感觉，如“江上之清风，山间之明月，耳得之而为声，目遇之而成色”，这其中所谓的声和色并非荣格所言的感觉，因为他们并没有在意识中留下痕迹；在内向性格中感觉依然有抑制，这是因为若要形成感觉，内向型的人需要调用主观感受，这意味着不同人对于同一事物的感觉发展不同，就像不同的火候与不同的配料对于同样的食材产生了不一样的化学作用。</p>
-<h2 id="直觉"><a href="#直觉" class="headerlink" title="直觉"></a>直觉</h2><p><em>直觉的确定性依赖于一种明确的心理事实，只不过主体对这一事实的根源及其完备状态没有完全意识到而已</em>，直觉大概就像我们对于欧几里得提出的五大公理的承认，对于牛顿三定律和万有引力存在的承认，这些不涉及逻辑的推导，但也不是对于苹果向下坠落这一感觉的再描述，而是存在于<strong>无意识的知觉</strong>。和感觉相同，荣格将直觉与外向内向去探索直觉的不同发展：</p>
+<h3 id="直觉"><a href="#直觉" class="headerlink" title="直觉"></a>直觉</h3><p><em>直觉的确定性依赖于一种明确的心理事实，只不过主体对这一事实的根源及其完备状态没有完全意识到而已</em>，直觉大概就像我们对于欧几里得提出的五大公理的承认，对于牛顿三定律和万有引力存在的承认，这些不涉及逻辑的推导，但也不是对于苹果向下坠落这一感觉的再描述，而是存在于<strong>无意识的知觉</strong>。和感觉相同，荣格将直觉与外向内向去探索直觉的不同发展：</p>
 <ol>
 <li>外向直觉指向世界：直觉瞬间遍历最多可遍历的可能性，排除所有感觉因素带来的偏差，直觉就像围棋里的妙手，直达客观事物的中真正潜伏的东西</li>
 <li>内向直觉指向内心：人类内心积淀了人类社会万年的经验，心灵原型又由于我们的理解方式无法看清，但直觉却构成了神迹的可能性。那些看似预言式的的道理，正是内向直觉和心灵原型联系的作证和显现。</li>
 </ol>
-<h2 id="思维"><a href="#思维" class="headerlink" title="思维"></a>思维</h2><p><em>思维是一种根据自身的规律用某种方式表达概念关系的心里功能，是一种统觉活动，并由此区分主动和被动的思维活动</em>。如何判断一种功能是思维的产物，只需要看连接这一功能实现的是否是纯粹的概念性的东西。</p>
+<h3 id="思维"><a href="#思维" class="headerlink" title="思维"></a>思维</h3><p><em>思维是一种根据自身的规律用某种方式表达概念关系的心里功能，是一种统觉活动，并由此区分主动和被动的思维活动</em>。如何判断一种功能是思维的产物，只需要看连接这一功能实现的是否是纯粹的概念性的东西。</p>
 <ol>
 <li>外向思维：当思维有客观倾向即是外向的，这种思维考虑客观事物的联系和实现，不恰当地类比为工程家思维，即着眼于现有事物的实现，但发展到极致后会令人觉得缺乏自由和远见，关注在思维的具体一层却忽视了其中更深刻的链条和纵深。</li>
 <li>内向思维：当思维有主观倾向即是内向的，这种思维不关注感觉和真正存在的客体而将所有自我心灵看到的意象分支抽象出来。我把它类比为数学家思维，将所有的抽象用心语和符号表示，再此基础上再次抽象，到了某种偏颇境地就会彻底脱离现实而找不到和现实相关的着力点。</li>
 </ol>
 <p>如果内向思维发展到脱节，就会如《罪与罚》里的拉斯柯尔尼科夫一般，在自我内心中成就了尼采式的超人逻辑，背弃了一切时间法律秩序的意义。这看上去或许是一种深思，但其实已经走入了无可挽回的虚无。</p>
-<h2 id="情感"><a href="#情感" class="headerlink" title="情感"></a>情感</h2><p><em>情感是发生在自我与某一特定内容之间的一种过程，是在接受或拒绝意义上给某一内容以确定价值的过程</em>。情感是理性而不是非理性的，这是人类在自我价值认可过程中最核心的一种功能。完全抽象的情感全人类是共通的，这种情感这也是人性和兽性的分野处。</p>
+<h3 id="情感"><a href="#情感" class="headerlink" title="情感"></a>情感</h3><p><em>情感是发生在自我与某一特定内容之间的一种过程，是在接受或拒绝意义上给某一内容以确定价值的过程</em>。情感是理性而不是非理性的，这是人类在自我价值认可过程中最核心的一种功能。完全抽象的情感全人类是共通的，这种情感这也是人性和兽性的分野处。</p>
 <ol>
 <li><strong>外向情感</strong>：受制于客观情况。情感确定的是自我价值，客观情况可以提供这种印证也可以剥夺自我部分，而当自我的情感完全依赖于客观情况时，便陷入了自我的完全脱离，所有的冷漠合理化，丧失了人类原型就无法去谈道德，谈愿望，丧失自我的人便陷入了歇斯底里症。贪痴嗔都是如此，被金钱，感情，不义所迷惑，完全投身于他们时自我的概念就不复存在，只剩下一个空洞的人格。</li>
 <li><strong>内向情感</strong>：依赖主观因素。<em>这种感情的强度只能被神化——却永远被清楚理解，使人们沉默，难以接近。提出否定的情感判断，或以故作高深的冷漠作为防御</em>。自恋症的出发都是由于这种内在情感：人类对于认同的需要是无穷的，所以权力欲也是无穷的，个人在情感失衡后便会完全倾向无限的自我牺牲，同时伴随权力的膨胀，便诞生了希特勒，斯大林这样的人。</li>
@@ -505,7 +701,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-01-03 22:05:32" itemprop="dateModified" datetime="2021-01-03T22:05:32+08:00">2021-01-03</time>
+        <time title="修改时间：2021-01-04 00:37:02" itemprop="dateModified" datetime="2021-01-04T00:37:02+08:00">2021-01-04</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -577,6 +773,7 @@
 <li>Animus残忍鲁莽，顽固邪恶</li>
 <li>Animus富有创造力，通往自我价值，赋予精神稳定，和女人的心灵连结，更加创新</li>
 </ol>
+<p>无论是Anima还是Animus都存在于人的潜意识之中：我偶然想到了罗大佑写的《船歌》和《弹唱调》，两首的旋律是近乎一致的但使用了不同处理，前者是电影中女孩出嫁的一首背景乐，后者则描绘的是电影中周润发饰演的黑社会。人对于相似音乐的感受会走向不同的方向，可能就是人的天性里共存着的男性女性气质，这使我们可以了解另一性，也可以使我们保有更多关于艺术和情感的幻想，而这种富有宗教色彩的两性共存似乎也在昭示人类的深刻渊源。</p>
 <h2 id="象征"><a href="#象征" class="headerlink" title="象征"></a>象征</h2><p>超越和整合作用，使互相对立的相互冲突的情感处于有机统一的状态。消除内心分裂造成的焦虑，使人超越平庸肤浅的生活，帮助组织调动心理能量。</p>
 <p>人类需要象征，象征是人类精神外化至物又再次反馈到内心的整个过程的综合，放在生活中说是我们的仪式感，而人类最重要的情感都在和象征挂钩。</p>
 <ul>
