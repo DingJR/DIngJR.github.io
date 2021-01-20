@@ -186,7 +186,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-count">10</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -199,7 +199,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -233,6 +233,301 @@
       
 
       
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://dingjr.github.io/2021/01/19/%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%80%E8%88%AC%E6%80%9D%E8%B7%AF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Juran Ding">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="居然的博客">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/01/19/%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%98%E7%9A%84%E4%B8%80%E8%88%AC%E6%80%9D%E8%B7%AF/" class="post-title-link" itemprop="url">解决问题的一般思路</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-01-19 23:57:51" itemprop="dateCreated datePublished" datetime="2021-01-19T23:57:51+08:00">2021-01-19</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-01-21 02:54:28" itemprop="dateModified" datetime="2021-01-21T02:54:28+08:00">2021-01-21</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Algorithm-and-DataStructure/" itemprop="url" rel="index"><span itemprop="name">Algorithm and DataStructure</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="一些说在前面的话"><a href="#一些说在前面的话" class="headerlink" title="一些说在前面的话"></a>一些说在前面的话</h1><p>解决问题往广义说可能是计算机学术上的新创造，可能是计算机工作中遇到的具体问题。但这里是狭义的，如果有什么实用价值的话是专门针对算法笔试中或者考试答题的，于是就有了一些基本的假设和前提能以尽可能缩小方法论的范围从而能让人易于理解也便于学习。</p>
+<p>假设:</p>
+<ol>
+<li>问题都是有解的，这个假设看上去像废话，但这是<strong>根本前提</strong>，笔试的形式限制了它问题的规模和可解性。这就是考试和实际问题最大的区别，考生面对的是前人解决过许多次的问题并且考试作为筛查手段一定有它的规范性，所以一定存在某种方法的穷举可以找到问题的答案，这篇文章所做的就是穷举方法。</li>
+<li>算法题目局限在计算机层面上局限于内存和cpu的交互（内存视为整体），这意味着在考虑问题的时候可以忽略因为任务调度带来的压力，多请求并发的合理tradeoff，和内存超过限制后和硬盘的交互等。即工程细节被忽略了，而仅局限于解决一个逻辑上的问题。</li>
+<li>考察范围的局限性：这和第一条不存在重复。如果解决的是解决方式知识范围存在于整个人类知识体系里的而不是具体的几种里，那这种测试是不现实的。所以问题的解决方法也是可以被穷举而得的。</li>
+</ol>
+<h1 id="思路选择"><a href="#思路选择" class="headerlink" title="思路选择"></a>思路选择</h1><p><img src="process.JPG" alt=""></p>
+<h2 id="贪心"><a href="#贪心" class="headerlink" title="贪心"></a>贪心</h2><p>拿到一个没有直接思路的问题先去考虑是否有贪心的方式求解，这是符合直觉的，如果取局部的最优最终指向全局的最优，那就尽情地获得局部的最优吧，那一定是好的。</p>
+<p>贪心有两条基本要求：</p>
+<ol>
+<li>子问题满足父问题形式</li>
+<li>当前选择是最优选择</li>
+</ol>
+<p><strong>问题1：不含 AAA 或 BBB 的字符串（<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/string-without-aaa-or-bbb/）">https://leetcode-cn.com/problems/string-without-aaa-or-bbb/）</a></strong></p>
+<p>给定两个整数 A 和 B，返回任意字符串 S，要求满足：</p>
+<ul>
+<li>S 的长度为 A + B，且正好包含 A 个 ‘a’ 字母与 B 个 ‘b’ 字母；</li>
+<li>子串 ‘aaa’ 没有出现在 S 中；</li>
+<li>子串 ‘bbb’ 没有出现在 S 中。</li>
+</ul>
+<p>示例：</p>
+<pre><code>输入：A = 1, B = 2
+输出：&quot;abb&quot;
+解释：&quot;abb&quot;, &quot;bab&quot; 和 &quot;bba&quot; 都是正确答案。
+</code></pre><p><strong>解决思路</strong>：在选择当前字符的时候，选剩余长度多的那个字母，如果构成三连了，则选另一个。证明以上思路是容易的，注意题目要求一定存在解，而在当前做出的选择如果导致最终不可行，可以假设存在一个可行的解，那个可行的解是可以变换到当前解的。（不予以详细证明）</p>
+<p>一个问题如果可以发现它的贪心性质，那很好，因为贪心意味着所有问题到当前节点不需要再考虑过往的不良影响，避免了所有的回溯，编码会简单很多。贪心的复杂度一般为$O(n)$。</p>
+<h2 id="动态规划"><a href="#动态规划" class="headerlink" title="动态规划"></a>动态规划</h2><p>贪心算法可以被看做一种不需要回溯dfs，再每一层搜索的时候，看着最好的去就行了；而动态规划可以被视为一种剪枝，可以记录搜索过的路径，所以动态规划可以解决更多的问题（贪心也是动态规划的一种），但也因此需要付出相应的空间复杂度去存储路径。</p>
+<p>DP所要满足的条件：</p>
+<ol>
+<li>子问题满足父问题形式</li>
+<li>是否存在重叠子问题</li>
+</ol>
+<p><strong>问题2：不同路径 II（<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/unique-paths-ii/）">https://leetcode-cn.com/problems/unique-paths-ii/）</a></strong>：</p>
+<p>一个机器人位于一个 m x n 网格的左上角 （起始点在下图中标记为“Start” ）。</p>
+<p>机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为“Finish”）。</p>
+<p>现在考虑网格中有障碍物。那么从左上角到右下角将会有多少条不同的路径？</p>
+<pre><code>输入：obstacleGrid = [[0,0,0],[0,1,0],[0,0,0]]
+输出：2
+</code></pre><p><strong>解决思路</strong>：到达任一一点之前一步一定在其左边或者上边，所以把这两点的路径总数加和即可得到到达当前点的路径数。状态转移方程：$dp[i][j] = dp[i-1][j] + dp[i][j-1]$</p>
+<p>是否能使用动态规划，只用看是否一个问题依赖且仅依赖于几个相同形式子问题的解，这几个子问题的解作为参数传入函数变化得到父问题的解，这就是状态转移方程。</p>
+<h2 id="分治"><a href="#分治" class="headerlink" title="分治"></a>分治</h2><p>贪心和DP是通过限制搜索路径（无回溯和剪枝）完成加速搜索的，但分治则是通过改变问题（搜索）的规模去完成加速的，它的时间复杂度详见Master’s Method。</p>
+<p>DP所要满足的条件：</p>
+<ol>
+<li>原问题可以拆分成互相独立的子问题</li>
+</ol>
+<p><strong>问题3：数组中的第K个最大元素（<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/kth-largest-element-in-an-array/）">https://leetcode-cn.com/problems/kth-largest-element-in-an-array/）</a></strong>:</p>
+<p>在未排序的数组中找到第 k 个最大的元素。请注意，你需要找的是数组排序后的第 k 个最大的元素，而不是第 k 个不同的元素。</p>
+<pre><code>输入: [3,2,1,5,6,4] 和 k = 2
+输出: 5
+</code></pre><p><strong>解题思路</strong>：快排思路，如果k落在了partitionPoint左边，就继续搜索左边，否则搜索右边。</p>
+<p>什么时候使用分治？一个问题如果可以拆分成子问题而又不存在重叠的子问题，那就是使用分治的时候。</p>
+<h2 id="遍历及回溯"><a href="#遍历及回溯" class="headerlink" title="遍历及回溯"></a>遍历及回溯</h2><p>遍历的本质是一种暴力模拟所有情形，因为所有的问题在拿到的第一直觉都是遍历所有可能的方案去解决，它并不巧妙而且形式极其固定。但最后的防线是必要的，这种思路的可行性仅取决于一点，是否有可以接受的时间复杂度？</p>
+<p>该思路具体的方法有两种，<strong>DFS</strong>和<strong>BFS</strong>。</p>
+<p><strong>问题4：腐烂的橘子（<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/rotting-oranges/）">https://leetcode-cn.com/problems/rotting-oranges/）</a></strong>:</p>
+<p>在给定的网格中，每个单元格可以有以下三个值之一：</p>
+<ul>
+<li>值 0 代表空单元格；</li>
+<li>值 1 代表新鲜橘子；</li>
+<li>值 2 代表腐烂的橘子。</li>
+</ul>
+<p>每分钟，任何与腐烂的橘子（在 4 个正方向上）相邻的新鲜橘子都会腐烂。</p>
+<p>返回直到单元格中没有新鲜橘子为止所必须经过的最小分钟数。如果不可能，返回 -1。</p>
+<pre><code>输入：[[2,1,1],[1,1,0],[0,1,1]]
+输出：4
+</code></pre><p>提示:<br>    1 &lt;= grid.length &lt;= 10<br>    1 &lt;= grid[0].length &lt;= 10</p>
+<p><strong>解决思路</strong>：典型的<strong>bfs</strong>题目，搜索的层数变化即使分钟数的变化，最终有多少层即需要多少分钟，如果不能覆盖所有的节点，返回-1。</p>
+<p><strong>问题5：找树左下角的值（<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/find-bottom-left-tree-value/）">https://leetcode-cn.com/problems/find-bottom-left-tree-value/）</a></strong></p>
+<p>给定一个二叉树，在树的最后一行找到最左边的值。</p>
+<pre><code>输入:
+
+  2
+ / \
+1   3
+
+输出:
+1
+</code></pre><p><strong>解决思路</strong>：典型的<strong>dfs</strong>题目，每搜索到一个最深的深度时，记录第一个出现的节点，最后的记录即是答案。</p>
+<p><strong>问题3：N皇后<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/n-queens-ii/">https://leetcode-cn.com/problems/n-queens-ii/</a>)</strong></p>
+<p>n皇后问题研究的是如何将n个皇后放置在n×n的棋盘上，并且使皇后彼此之间不能相互攻击。给你一个整数n ，返回n皇后问题不同的解决方案的数量。</p>
+<pre><code>1 &lt;= n &lt;= 9
+皇后彼此不能相互攻击，也就是说：任何两个皇后都不能处于同一条横行、纵行或斜线上。
+</code></pre><p><strong>解决思路</strong>：遍历所有皇后的摆放位置（剪枝：前n层的皇后后，之后的皇后不可以有列，对角线冲突），如果合法则ans+1。</p>
+<p>遍历的可行性依赖于时间复杂度和问题分析，如：</p>
+<ol>
+<li>问题一的时间复杂度为$O(n)$，n为全部桔子数量</li>
+<li>问题二的时间复杂度为$O(n)$，n为全部节点数量</li>
+<li>问题三的时间复杂度为$O(n!)$，n为棋牌长度</li>
+</ol>
+<p>实现遍历通常来说是代码量较大的，而且通常与其它思路背道而驰，所以在决定使用遍历之前，先根据题目条件筛选，通常以下几种情况可以采取遍历的思路：</p>
+<ol>
+<li>问题规模n很大，则遍历的复杂度要控制在$O(n)$~$O(n log(n))$之间</li>
+<li>问题规模很小，并且明确要求返回所有结果时，通常遍历时必然思路。</li>
+<li>当其它方法均不可行时，使用遍历（暴力求解）</li>
+</ol>
+<h2 id="二分法"><a href="#二分法" class="headerlink" title="二分法"></a>二分法</h2><p>二分法是分治思想的一种具体体现，但使用范围极广所以单列。使用二分法的标志很明显，在一个排序的数组上，并且当前不能接受遍历的复杂度，二分法只有一个作用，把某个步骤的$O(n)$复杂度降为可以接受的$O(log(n))$复杂度。</p>
+<p><strong>问题4：寻找两个正序数组的中位数（<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/median-of-two-sorted-arrays/）">https://leetcode-cn.com/problems/median-of-two-sorted-arrays/）</a></strong></p>
+<p>给定两个大小为 m 和 n 的正序（从小到大）数组 nums1 和 nums2。请你找出并返回这两个正序数组的中位数。</p>
+<pre><code>输入：nums1 = [1,2], nums2 = [3,4]
+输出：2.50000
+</code></pre><p><strong>解决思路</strong>：通过取出nums1的前i个元素和nums2的前k-i个元素构成nums1.length个新的数组，这些新数组则满足一个全序关系</p>
+<ol>
+<li>如果nums1取出的最后一个元素大于剩余nums2的第一个元素，则这个划分一定在中位数划分的前面。</li>
+<li>如果nums2取出的最后一个元素小于剩余nunms1的最后一个元素，则这个划分一定在中位数划分的后面。</li>
+<li>else:则这个划分一定是一个中位数划分。</li>
+</ol>
+<p>看出二分法不困难，但使用二分法需要一些经验，难点在于如何编写比较条件，通过比较条件可以知道二分搜索该往前还是往后。看出这个条件就是使用二分法的关键所在。</p>
+<h2 id="位运算"><a href="#位运算" class="headerlink" title="位运算"></a>位运算</h2><p>有些问题提出来了非常反第一直觉的时间及空间复杂度要求，那可以尝试位运算</p>
+<h3 id="统计二进制中1的个数"><a href="#统计二进制中1的个数" class="headerlink" title="统计二进制中1的个数"></a>统计二进制中1的个数</h3><pre><code>int countNum1(int a)&#123;
+    int i = 0;
+    while(a)&#123;
+        a &amp;= a - 1;
+        i += 1;
+    &#125;
+    return i;
+&#125;
+</code></pre><h3 id="子集枚举"><a href="#子集枚举" class="headerlink" title="子集枚举"></a>子集枚举</h3><p>{2,5,9}的所有子集</p>
+<pre><code>000000    &#123; &#125;            0
+001001    &#123; 9 &#125;        1
+010010    &#123; 2 &#125;        2
+011011    &#123; 2, 9 &#125;    3
+100100    &#123; 5 &#125;        4
+101101    &#123; 5, 9 &#125;    5
+110110    &#123; 5, 2 &#125;    6
+111111    &#123; 5, 2, 9 &#125;    7
+</code></pre><h3 id="异或运算"><a href="#异或运算" class="headerlink" title="异或运算"></a>异或运算</h3><pre><code>a ^ b ^ b = a
+</code></pre>
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://dingjr.github.io/2021/01/13/%E5%8F%AF%E6%8C%81%E4%B9%85%E5%8C%96%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Juran Ding">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="居然的博客">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/01/13/%E5%8F%AF%E6%8C%81%E4%B9%85%E5%8C%96%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="post-title-link" itemprop="url">可持久化数据结构</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-01-13 00:17:29 / 修改时间：20:55:03" itemprop="dateCreated datePublished" datetime="2021-01-13T00:17:29+08:00">2021-01-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Algorithm-and-DataStructure/" itemprop="url" rel="index"><span itemprop="name">Algorithm and DataStructure</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="可持久化数据结构-Persistent-data-structure"><a href="#可持久化数据结构-Persistent-data-structure" class="headerlink" title="可持久化数据结构(Persistent data structure)"></a>可持久化数据结构(Persistent data structure)</h1><p>这几天偶然看见了介绍高级数据结构的网课，就跟随它的步伐学习些新东西，算是TAOCP的铺垫和准备。<br>看过不少关于可持久数据结构的介绍，在这里尽可能细致的梳理出它的背景和设计思想。</p>
+<p><strong>定义</strong>：always preserves the previous version of itself when it is modified.</p>
+<p>就像多重分支宇宙一样，每次事件到来发生作用时，会让宇宙分支成主宇宙(受到了事件影响)，和分支宇宙(未受到事件影响的存档)。<br>而根据分支宇宙是否可以继续改变，宇宙是否可以重新连接又会出现可持久化数据结构的三种：</p>
+<ol>
+<li>Partially persistent: if all versions can be accessed but only the newest version can be modified. </li>
+<li>Flly persistent: if every version can be both accessed and modified. </li>
+<li>Confluently persistent: If there is also a meld or merge operation that can create a new version from two previous versions.</li>
+</ol>
+<h2 id="三种存储版本技术"><a href="#三种存储版本技术" class="headerlink" title="三种存储版本技术"></a>三种存储版本技术</h2><ol>
+<li>Copy-on-Write：顾名思义，存储完全复制主宇宙到分宇宙</li>
+<li>Fat-Node：The fat node method is to record all changes made to node fields in the nodes themselves, without erasing old values of the fields.第一个方法虽然简单，但这意味着对于大小为m的数据进行n次修改后，我需要$O((m+n)*m)$的空间去存储这些数据，大部分时候这是不可接受的，所以每次我只记录修改的节点以缩小数据。<ul>
+<li>更新复杂度：空间复杂度比较简单，每次更新为$O(1)$，对于时间复杂度考虑Amortized Time：无论fatNode的存储方式是array还是list还是BST，按照从小到大的元素插入顺序更新AmortizedTime都是$O(1)$，详细可以参照Amortized的博客。</li>
+</ul>
+</li>
+<li>Path-Copying：a copy of all nodes is made on the path to any node which is about to be modified.这个方法听上去就比fatnode笨重许多，那它的笨重不是无意义的，如果要用full persistent，这个方式还是比方法1更轻巧些。<ul>
+<li>更新复杂度：取决于采用的path记录方式，list就是$O(n)，BST就是$O(log(n))$</li>
+</ul>
+</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -1445,10 +1740,16 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2020-12-30 02:31:49 / 修改时间：14:41:55" itemprop="dateCreated datePublished" datetime="2020-12-30T02:31:49+08:00">2020-12-30</time>
+      <time title="创建时间：2020-12-30 02:31:49" itemprop="dateCreated datePublished" datetime="2020-12-30T02:31:49+08:00">2020-12-30</time>
     </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-01-05 23:33:18" itemprop="dateModified" datetime="2021-01-05T23:33:18+08:00">2021-01-05</time>
+      </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
@@ -1477,7 +1778,7 @@
 <h2 id="Optimal-Substructure-Property"><a href="#Optimal-Substructure-Property" class="headerlink" title="Optimal Substructure Property"></a>Optimal Substructure Property</h2><blockquote>
 <p>A problem exhibits optimal substructure if an optimal solution to the problem contains within it optimal solutions to subproblems.</p>
 </blockquote>
-<p>这个问题的前提条件是面对对象是优化问题，<strong>动态规划解决的一定是最优化问题</strong>，而排序很明显，并不是一种最优化问题，这就是动态规划和分治最重要的区别，二者都依赖子问题与父问题结构的相似，但除了思想上这部分的重叠外，两者的解决问题对象全然不同。</p>
+<p>DP的前提条件是面对对象是优化问题，<strong>动态规划解决的一定是最优化问题</strong>，而排序很明显，并不是一种最优化问题，这就是动态规划和分治最重要的区别，二者都依赖子问题与父问题结构的相似，但除了思想上这部分的重叠外，两者的解决问题对象全然不同。</p>
 <p>大问题的解决方案蕴含在子问题方案之中，这就是动态规划的核心要求。换言之，如果我们构造出的子问题方案，基于该子问题方案找到最优大问题方案之中后，<strong>存在对于该子方案的另一选择可以构造出更优的全局结果，这个问题便不是DP适用的</strong>。还是以排序举例，如果将排序问题转换成求解最小的$\Sigma^n_{i=1}a_i*i$，似乎就将排序转换成了一个最优化问题，那我们上面的否定就站不住脚。但是，问题的解决方案是否包含在子问题的解决方案之中？对于数组A一分为二拆为B1,B2，那B1的结果和B2的结果的最优值B1min,B2min并没有结合方案去获得A的最优值。</p>
 <h2 id="Overlapping-subProblem"><a href="#Overlapping-subProblem" class="headerlink" title="Overlapping subProblem"></a>Overlapping subProblem</h2><p>DP的子问题一定是互相重叠的，这似乎有一点矛盾，既然我拆成子问题，那子问题必然不能在状态上互相影响，否则对于他们的求解就是更为复杂的，那如何才是重叠？重叠指示的并不是问题的互相耦合，而是不同大小问题所面对的子问题可能是相同的，比如在求解Fib(10)时拆分成了Fib(9)和Fib(8),而这两个子问题都需要求解Fib(7)，即二者重叠。更直接的说法，<strong>Subproblems are smaller versions of the original problem</strong>. 再以merge sort争辩举例，如果不以最优值结合，而以最优方案结合，将拆分出的B1数组和B2数组以merge算法结合到一起就是A的解，这不就是符合DP要求了吗？但这依然不符合DP的思想，因为无论如何拆分，B1和B2不会存在重叠，按照merge sort算法，<strong>不会记录一个序列既是B1的解又是B2的解，所以这便不是DP的</strong>。</p>
 <h2 id="Method"><a href="#Method" class="headerlink" title="Method"></a>Method</h2><p>使用DP的核心思路有两个：</p>

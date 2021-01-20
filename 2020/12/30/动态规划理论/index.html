@@ -30,7 +30,7 @@
 <meta property="og:description" content="Definition Break up a problem into a series of overlapping subproblems, and build up solutions to larger and larger subproblems.  动态规划是一种经典的算法思想，似乎说到它就会浮现一系列问题，LCS，背包问题，但这都是算法层面的实现，涉及具体的方法。而本文不详细讲解具体问">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-12-29T18:31:49.000Z">
-<meta property="article:modified_time" content="2020-12-30T06:41:55.805Z">
+<meta property="article:modified_time" content="2021-01-05T15:33:18.627Z">
 <meta property="article:author" content="Juran Ding">
 <meta property="article:tag" content="Dynamic Programming">
 <meta name="twitter:card" content="summary">
@@ -192,7 +192,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-count">10</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -205,7 +205,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -270,10 +270,16 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2020-12-30 02:31:49 / 修改时间：14:41:55" itemprop="dateCreated datePublished" datetime="2020-12-30T02:31:49+08:00">2020-12-30</time>
+      <time title="创建时间：2020-12-30 02:31:49" itemprop="dateCreated datePublished" datetime="2020-12-30T02:31:49+08:00">2020-12-30</time>
     </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-01-05 23:33:18" itemprop="dateModified" datetime="2021-01-05T23:33:18+08:00">2021-01-05</time>
+      </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
@@ -302,7 +308,7 @@
 <h2 id="Optimal-Substructure-Property"><a href="#Optimal-Substructure-Property" class="headerlink" title="Optimal Substructure Property"></a>Optimal Substructure Property</h2><blockquote>
 <p>A problem exhibits optimal substructure if an optimal solution to the problem contains within it optimal solutions to subproblems.</p>
 </blockquote>
-<p>这个问题的前提条件是面对对象是优化问题，<strong>动态规划解决的一定是最优化问题</strong>，而排序很明显，并不是一种最优化问题，这就是动态规划和分治最重要的区别，二者都依赖子问题与父问题结构的相似，但除了思想上这部分的重叠外，两者的解决问题对象全然不同。</p>
+<p>DP的前提条件是面对对象是优化问题，<strong>动态规划解决的一定是最优化问题</strong>，而排序很明显，并不是一种最优化问题，这就是动态规划和分治最重要的区别，二者都依赖子问题与父问题结构的相似，但除了思想上这部分的重叠外，两者的解决问题对象全然不同。</p>
 <p>大问题的解决方案蕴含在子问题方案之中，这就是动态规划的核心要求。换言之，如果我们构造出的子问题方案，基于该子问题方案找到最优大问题方案之中后，<strong>存在对于该子方案的另一选择可以构造出更优的全局结果，这个问题便不是DP适用的</strong>。还是以排序举例，如果将排序问题转换成求解最小的$\Sigma^n_{i=1}a_i*i$，似乎就将排序转换成了一个最优化问题，那我们上面的否定就站不住脚。但是，问题的解决方案是否包含在子问题的解决方案之中？对于数组A一分为二拆为B1,B2，那B1的结果和B2的结果的最优值B1min,B2min并没有结合方案去获得A的最优值。</p>
 <h2 id="Overlapping-subProblem"><a href="#Overlapping-subProblem" class="headerlink" title="Overlapping subProblem"></a>Overlapping subProblem</h2><p>DP的子问题一定是互相重叠的，这似乎有一点矛盾，既然我拆成子问题，那子问题必然不能在状态上互相影响，否则对于他们的求解就是更为复杂的，那如何才是重叠？重叠指示的并不是问题的互相耦合，而是不同大小问题所面对的子问题可能是相同的，比如在求解Fib(10)时拆分成了Fib(9)和Fib(8),而这两个子问题都需要求解Fib(7)，即二者重叠。更直接的说法，<strong>Subproblems are smaller versions of the original problem</strong>. 再以merge sort争辩举例，如果不以最优值结合，而以最优方案结合，将拆分出的B1数组和B2数组以merge算法结合到一起就是A的解，这不就是符合DP要求了吗？但这依然不符合DP的思想，因为无论如何拆分，B1和B2不会存在重叠，按照merge sort算法，<strong>不会记录一个序列既是B1的解又是B2的解，所以这便不是DP的</strong>。</p>
 <h2 id="Method"><a href="#Method" class="headerlink" title="Method"></a>Method</h2><p>使用DP的核心思路有两个：</p>
